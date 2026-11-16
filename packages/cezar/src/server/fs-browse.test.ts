@@ -48,11 +48,11 @@ describe('GET /api/v1/fs/browse (step 4.1)', () => {
     mkdirSync(join(home, '.hidden'), { recursive: true });
     mkdirSync(join(outside, 'secrets'), { recursive: true });
     writeFileSync(join(home, 'notes.txt'), 'not a directory', 'utf8');
-    // The two links that make or break the containment rule. Without symlink privilege (an
-    // unprivileged win32 account) only the symlink cases skip, not the whole suite (#2146).
+    // The two links that make or break the containment rule. `junction` needs no privilege on
+    // win32 (POSIX ignores the type); if linking still fails, only the symlink cases skip (#2146).
     try {
-      symlinkSync(outside, join(home, 'link-outside'), 'dir');
-      symlinkSync(join(home, 'projects/repo'), join(home, 'link-inside'), 'dir');
+      symlinkSync(outside, join(home, 'link-outside'), 'junction');
+      symlinkSync(join(home, 'projects/repo'), join(home, 'link-inside'), 'junction');
       linked = true;
     } catch {
       linked = false;
